@@ -56,11 +56,13 @@ namespace dotnet_project.Services.CharacterService
         try{
         Character character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
 
-        character.Name = updatedCharacter.Name;
-        character.HitPoints = updatedCharacter.HitPoints;
-        character.Strength = updatedCharacter.Strength;
-        character.Intelligence = updatedCharacter.Intelligence;
-        character.Class = updatedCharacter.Class;
+        _mapper.Map(updatedCharacter, character);
+
+        // character.Name = updatedCharacter.Name;
+        // character.HitPoints = updatedCharacter.HitPoints;
+        // character.Strength = updatedCharacter.Strength;
+        // character.Intelligence = updatedCharacter.Intelligence;
+        // character.Class = updatedCharacter.Class;
 
         response.Data = _mapper.Map<GetCharacterDto>(character);
         } catch(Exception ex)
@@ -69,9 +71,26 @@ namespace dotnet_project.Services.CharacterService
             response.Message = ex.Message;
         }
         return response;
-        
+    }
+
+    public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
+    {
+        ServiceResponse<List<GetCharacterDto>> response = new ServiceResponse<List<GetCharacterDto>>();
         
 
+        try
+        {
+            Character character = characters.First(c => c.Id == id);
+            characters.Remove(character);
+            response.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.Message;
+        }
+        return response;
     }
+
     }
 }
