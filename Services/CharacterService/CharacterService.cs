@@ -16,17 +16,17 @@ namespace dotnet_project.Services.CharacterService
             new Character {Id = 2, Name = "Peter"}
         };
         
-        public List<Character> AddCharacter(Character newCharacter) 
+        public async Task<List<Character>> AddCharacter(Character newCharacter) 
         {
             characters.Add(newCharacter);
             return characters;
         }
 
-    public List<Character> GetAllCharacters()
+    public async Task<List<Character>> GetAllCharacters()
         {
              return characters;
         }
-    public Character GetCharacterById(int id)
+    public async Task<Character> GetCharacterById(int id)
     {
             return characters.FirstOrDefault(c => c.Id == id);
     }
