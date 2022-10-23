@@ -48,5 +48,30 @@ namespace dotnet_project.Services.CharacterService
             serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
             return serviceResponse;
     }
+
+    public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
+    {
+        ServiceResponse<GetCharacterDto> response = new ServiceResponse<GetCharacterDto>();
+
+        try{
+        Character character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
+
+        character.Name = updatedCharacter.Name;
+        character.HitPoints = updatedCharacter.HitPoints;
+        character.Strength = updatedCharacter.Strength;
+        character.Intelligence = updatedCharacter.Intelligence;
+        character.Class = updatedCharacter.Class;
+
+        response.Data = _mapper.Map<GetCharacterDto>(character);
+        } catch(Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.Message;
+        }
+        return response;
+        
+        
+
+    }
     }
 }
