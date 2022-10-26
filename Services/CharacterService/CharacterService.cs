@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using dotnet_project.Dtos.Character;
 using AutoMapper;
+using dotnet_project.Data;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace dotnet_project.Services.CharacterService
@@ -20,10 +22,11 @@ namespace dotnet_project.Services.CharacterService
 
         private readonly IMapper _mapper;
 
-
-        public CharacterService(IMapper mapper)
+        private readonly DataContext _context;
+        public CharacterService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context;
         }
         
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter) 
@@ -39,7 +42,11 @@ namespace dotnet_project.Services.CharacterService
 
     public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
-             return new ServiceResponse<List<GetCharacterDto>> {Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList()};
+            var response = new ServiceResponse<List<GetCharacterDto>>();
+            var dbCharacters = await _context.Characters.ToListAsync();
+            response.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+
+             return response;
         }
     public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
     {
