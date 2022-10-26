@@ -51,8 +51,8 @@ namespace dotnet_project.Services.CharacterService
     public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
     {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var character = characters.FirstOrDefault(c => c.Id == id);
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            var dbCharacter = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
+            serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             return serviceResponse;
     }
 
