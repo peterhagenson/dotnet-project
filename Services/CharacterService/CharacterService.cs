@@ -44,7 +44,7 @@ namespace dotnet_project.Services.CharacterService
         {
             var response = new ServiceResponse<List<GetCharacterDto>>();
             var dbCharacters = await _context.Characters.ToListAsync();
-            response.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            response.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
 
              return response;
         }
