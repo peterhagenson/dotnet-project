@@ -14,11 +14,6 @@ namespace dotnet_project.Services.CharacterService
     public class CharacterService: ICharacterService
     {
 
-         private static List<Character> characters = new List<Character> {
-            new Character(),
-            new Character {Id = 1, Name = "Sam"},
-            new Character {Id = 2, Name = "Peter"}
-        };
 
         private readonly IMapper _mapper;
 
@@ -33,7 +28,7 @@ namespace dotnet_project.Services.CharacterService
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             Character character = (_mapper.Map<Character>(newCharacter));
-            characters.Add(_mapper.Map<Character>(newCharacter));
+            _context.Characters.Add(_mapper.Map<Character>(newCharacter));
             // character.Id = characters.Max(c => c.Id) + 1;
             _context.Characters.Add(character);
             await _context.SaveChangesAsync();
@@ -90,9 +85,11 @@ namespace dotnet_project.Services.CharacterService
 
         try
         {
-            Character character = characters.First(c => c.Id == id);
-            characters.Remove(character);
-            response.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            Character character = await _context.Characters.FirstAsync(c => c.Id == id);
+            _context.Characters.Remove(character);
+            await _context.SaveChangesAsync();
+            response.Data = _context.Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+
         }
         catch (Exception ex)
         {
